@@ -22,6 +22,7 @@ jobs:
       - name: Build
         run: pnpm build
   deploy:
+    needs: build
     uses: ruibaby/plugin-static-pages/.github/workflows/cd.yaml@main
     secrets:
       endpoint: ${{ secrets.ENDPOINT }}
