@@ -1,0 +1,33 @@
+name: Deploy to Halo
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+      - name: Build
+        run: pnpm build
+  deploy:
+    uses: ruibaby/plugin-static-pages/actions/cd.yaml@main
+    secrets:
+      endpoint: ${{ secrets.ENDPOINT }}
+      id: ${{ secrets.ID }}
+      pat: ${{ secrets.PAT }}
+    permissions:
+      contents: write
+    with:
+      dist-path: dist
