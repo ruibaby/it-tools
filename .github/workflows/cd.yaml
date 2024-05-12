@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -21,14 +21,6 @@ jobs:
         run: pnpm install
       - name: Build
         run: pnpm build
-  deploy:
-    needs: build
-    uses: ruibaby/plugin-static-pages/.github/workflows/cd.yaml@main
-    secrets:
-      endpoint: ${{ secrets.ENDPOINT }}
-      id: ${{ secrets.ID }}
-      pat: ${{ secrets.PAT }}
-    permissions:
-      contents: write
-    with:
-      dist-path: dist
+      - name: Deploy to Halo
+        run: |
+          npx halo-static-pages-deploy-cli deploy -e ${{ secrets.ENDPOINT }} -i ${{ secrets.ID }} -t ${{ secrets.PAT }} -f dist
